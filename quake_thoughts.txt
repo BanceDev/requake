@@ -1,0 +1,49 @@
+NeoQuake: The Next Gen QuakeWorld Client
+
+Main Menu:
+TF2/DBT inspired menu. Menu options either across top row or left aligned column.
+
+Options will be:
+quick play
+server browser
+training
+
+then a next section will have demos
+
+then a section for settings that will say
+settings
+hud editor
+
+then quit
+
+HUD:
+- DBT/QC inspired default HUD
+- Alt crosshair color on hover
+- Hit indicator
+
+QoL:
+- make the modern player model be included and selectable by default
+- autoid on by default
+- remastered viewmodels
+- better armor and bmodels textures
+- discord rpc
+    - may be a way to invite friends over discord to your server or join discord friends
+- favorite servers for quick access
+
+Settings Changes:
+- map changes should be simple: wallcolor, floorcolor, outlines, miplevel, etc.
+- previews/explanations of changes should show in a tooltip.
+- save on exit on by default
+- inference mm2 name from player name
+- player/enemy skin modes. Color or texture and then update UI dynamically to configure from there should also detect new vs old model.
+
+Training:
+- tutorial: map I'm making
+- aim
+    - rocket aim: end2
+    - rocket midair: idk the name
+    - mixed aim: povdmm4
+- movement
+    - circle jump: ztrain
+    - bhop: zjumps?
+    - big 5 racing: race32c
