@@ -1,3 +1,7 @@
+![Banner](https://github.com/BanceDev/neoquake/blob/main/neoquake.png)
+
+---
+
 # NeoQuake — A Next Generation QuakeWorld Client
 NeoQuake is a fork of the unezQuake client that is focused on creating an experience that takes from the advancements in the FPS genre over the decades.
 
@@ -5,7 +9,7 @@ NeoQuake is a fork of the unezQuake client that is focused on creating an experi
 
 ## Compiling
 
-On Linux, `./build-linux.sh` produces a binary in the top directory. 
+On Linux, `./build-linux.sh` produces a binary in the top directory.
 
-For a more in-depth description of how to build on all platforms, have a look at 
-[BUILD.md](BUILD.md).
+For a more in-depth description of how to build on all platforms, have a look at
+[BUILD.md](BUILD.md)
