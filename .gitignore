@@ -21,3 +21,5 @@ src/.msversion.h
 /build*/
 
 !.gitignore
+!.gitmodules
+!.github
