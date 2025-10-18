@@ -8,6 +8,10 @@ unezquake
 unezquake.exe
 unezquake-*.exe
 unezquake-*-*
+neoquake
+neoquake.exe
+neoquake-*.exe
+neoquake-*-*
 *.vcxproj*.user
 *.vcxproj*.cache
 SysPrintf.log

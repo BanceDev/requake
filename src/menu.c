@@ -374,7 +374,7 @@ void M_Menu_Main_f (void) {
 
 #define BIGLETTER_WIDTH	64
 #define BIGLETTER_HEIGHT	64
-#define BIGMENU_LEFT				72
+#define BIGMENU_LEFT				24
 #define BIGMENU_TOP					32
 #define BIGMENU_ITEMS_SCALE			0.3
 #define	BIGMENU_LETTER_SPACING		-2
@@ -383,20 +383,22 @@ void M_Menu_Main_f (void) {
 typedef struct bigmenu_items_s {
 	const char *label;
 	void (* enter_handler) (void);
+	int pic_index;
 } bigmenu_items_t;
 
 #define BIGMENU_ITEMS_COUNT(x) (sizeof(x) / sizeof(bigmenu_items_t))
 
 bigmenu_items_t mainmenu_items[] = {
-	{"Single Player", M_Menu_SinglePlayer_f},
-	{"Multiplayer", M_Menu_MultiPlayer_f},
-	{"Options", M_Menu_Options_f},
-	{"Demos", M_Menu_Demos_f},
-	{"Help", M_Menu_Help_f},
-	{"Quit", M_Menu_Quit_f}
+	{"Quick Play", M_Menu_SinglePlayer_f, CACHEPIC_QUICKPLAY},
+	{"Servers", M_Menu_MultiPlayer_f, CACHEPIC_SERVERS},
+	{"Training", M_Menu_Options_f, CACHEPIC_TRAINING},
+	{"Replays", M_Menu_Demos_f, CACHEPIC_DEMOS},
+	{"Settings", M_Menu_Options_f, CACHEPIC_SETTINGS},
+	{"HUD Editor", M_Menu_Help_f, CACHEPIC_HUD_EDITOR},
+	{"Quit", M_Menu_Quit_f, CACHEPIC_QUIT}
 };
 
-#define    MAIN_ITEMS    (newmainmenu ? BIGMENU_ITEMS_COUNT(mainmenu_items) : 5)
+#define    MAIN_ITEMS     7
 
 // mcharset must be supported in this point
 static void M_BigMenu_DrawItems(bigmenu_items_t *menuitems, const unsigned int items, int left_corner, int top_corner, int *width, int *height)
@@ -408,7 +410,24 @@ static void M_BigMenu_DrawItems(bigmenu_items_t *menuitems, const unsigned int i
 	int y = top_corner;
 
 	for (i = 0; i < items; i++) {
-		int thiswidth = strlen(menuitems[i].label)*BIGMENU_ITEMS_SCALE*BIGLETTER_WIDTH;
+		int thiswidth;
+		mpic_t *pic = NULL;
+		
+		// Check if this item has a texture
+		if (menuitems[i].pic_index >= 0) {
+			pic = Draw_CachePic(menuitems[i].pic_index);
+			if (pic) {
+				thiswidth = pic->width;
+				Draw_TransPic(x, y, pic);
+				mheight += pic->height + BIGMENU_VERTICAL_PADDING;
+				mwidth = max(mwidth, thiswidth);
+				y += pic->height + BIGMENU_VERTICAL_PADDING;
+				continue;
+			}
+		}
+		
+		// Fall back to text rendering
+		thiswidth = strlen(menuitems[i].label)*BIGMENU_ITEMS_SCALE*BIGLETTER_WIDTH;
 		mheight += BIGMENU_ITEMS_SCALE*BIGLETTER_HEIGHT + BIGMENU_VERTICAL_PADDING;
 		mwidth = max(mwidth, thiswidth);
 		Draw_BigString(x, y, menuitems[i].label, NULL, 0, 
@@ -425,11 +444,9 @@ void M_Main_Draw (void) {
 	mpic_t *p;
 	int itemheight;
 
-	M_DrawTransPic (16, BIGMENU_TOP, Draw_CachePic (CACHEPIC_QPLAQUE) );
-
 	// the Main Manu heading
 	p = Draw_CachePic (CACHEPIC_TTL_MAIN);
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	Draw_Pic((320-p->width)/2 + ((menuwidth - 320)>>1), 0, p);
 
 	// Main Menu items
 	if (Draw_BigFontAvailable()) {
@@ -454,7 +471,7 @@ void M_Main_Draw (void) {
 		itemheight = 20;
 	}	
 
-	M_DrawTransPic (54, BIGMENU_TOP + m_main_cursor * itemheight,
+	M_DrawTransPic (8, BIGMENU_TOP + m_main_cursor * itemheight,
 		Draw_CachePic(CACHEPIC_MENUDOT1 + f)
 	);
 }
@@ -728,7 +745,6 @@ void M_SinglePlayer_Draw (void) {
 		return;
 	}
 
-	M_DrawTransPic (16, BIGMENU_TOP, Draw_CachePic (CACHEPIC_QPLAQUE) );
 	p = Draw_CachePic (CACHEPIC_TTL_SGL);
 	M_DrawPic ( (320-p->width)/2, 4, p);
 
@@ -750,7 +766,7 @@ void M_SinglePlayer_Draw (void) {
 		itemheight = 20;
 	}
 
-	M_DrawTransPic (54, BIGMENU_TOP + m_singleplayer_cursor * itemheight,
+	M_DrawTransPic (8, BIGMENU_TOP + m_singleplayer_cursor * itemheight,
 		Draw_CachePic(CACHEPIC_MENUDOT1 + f)
 	);
 }
@@ -904,7 +920,6 @@ void M_Menu_SinglePlayer_f (void) {
 void M_SinglePlayer_Draw (void) {
 	mpic_t *p;
 
-	M_DrawTransPic (16, 4, Draw_CachePic (CACHEPIC_QPLAQUE) );
 	p = Draw_CachePic (CACHEPIC_TTL_SGL);
 	M_DrawPic ( (320-p->width)/2, 4, p);
 	//    M_DrawTransPic (72, 32, Draw_CachePic (CACHEPIC_SP_MENU) );
@@ -1173,7 +1188,6 @@ void M_MultiPlayerSub_Draw (void) {
 	mpic_t    *p;
 	int lx, ly;
 
-	M_DrawTransPic (16, 4, Draw_CachePic (CACHEPIC_QPLAQUE) );
 	p = Draw_CachePic (CACHEPIC_P_MULTI);
 	M_DrawPic ( (320-p->width)/2, 4, p);
 	M_Print_GetPoint (80, 40, &m_multiplayer_window.x, &m_multiplayer_window.y, "Join Game", m_multiplayer_cursor == 0);

@@ -17,7 +17,7 @@ hud editor
 then quit
 
 HUD:
-- DBT/QC inspired default HUD
+- DBT/QC inspired default HUD [x]
 - Alt crosshair color on hover
 - Hit indicator
 

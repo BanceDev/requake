@@ -160,4 +160,4 @@ step "Compiling sources (this might take a while, please wait)..."
 cmake --build build --parallel
 
 printf "\n${GREEN}Build completed successfully.${NC}\n"
-printf "Copy ${YELLOW}build/unezquake-linux-${CPU}${NC} into your quake directory.\n\n"
+printf "Copy ${YELLOW}build/neoquake-linux-${CPU}${NC} into your quake directory.\n\n"

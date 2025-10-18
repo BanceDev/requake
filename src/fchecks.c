@@ -57,7 +57,7 @@ extern cvar_t scr_allowsnap;
 
 static void FChecks_VersionResponse (void)
 {
-	Cbuf_AddText (va("say {unezQuake &c9f6%s&r &c777%s&r " QW_PLATFORM ":" QW_RENDERER "}\n", VERSION_NUMBER, VersionHash()));
+	Cbuf_AddText (va("say {NeoQuake &c9f6%s&r &c777%s&r " QW_PLATFORM ":" QW_RENDERER "}\n", VERSION_NUMBER, VersionHash()));
 }
 
 static char *FChecks_FServerResponse_Text(void)
@@ -80,7 +80,7 @@ static void FChecks_FServerResponse (void)
 	if (!text)
 		return;
 
-	Cbuf_AddText(va("say unezQuake f_server response: %s\n", text));
+	Cbuf_AddText(va("say NeoQuake f_server response: %s\n", text));
 }
 
 static void FChecks_SkinsResponse (float fbskins)
@@ -292,7 +292,7 @@ static qbool FChecks_CheckFRulesetRequest (const char *s)
 	// truncate build hash to 5 characters
 	snprintf(shorthash, sizeof(shorthash), "%s", VersionHash());
 	shorthash[5] = '\0';
-	snprintf(versionwithhash, sizeof(versionwithhash), "unez&c9f6%s-%s&r", VERSION_NUMBER, shorthash);
+	snprintf(versionwithhash, sizeof(versionwithhash), "neo&c9f6%s-%s&r", VERSION_NUMBER, shorthash);
 
 	if (Util_F_Match(s, "f_ruleset"))	{
 		features = FChecks_RulesetAdditionString();

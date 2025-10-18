@@ -18,8 +18,8 @@ chmod -f +x appimagetool
 #unused but must exist
 DESKTOP_ENTRY='[Desktop Entry]
 Comment=A modern QuakeWorld client focused on competitive online play
-Name=unezQuake
-Exec=unezquake-linux-'$ARCH'
+Name=NeoQuake
+Exec=neoquake-linux-'$ARCH'
 Icon=io.github.ezQuake
 Type=Application
 StartupNotify=true
@@ -46,11 +46,11 @@ fi
 FAIL=${PIPESTATUS[0]}
 if [ $FAIL -eq 0 ];then
 	echo "executing with native libc"
-	"${APPDIR}/usr/bin/unezquake-linux-'$ARCH'" $*
+	"${APPDIR}/usr/bin/neoquake-linux-'$ARCH'" $*
 else
 	echo "executing with appimage libc"
 	export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${APPDIR}/usr/lib-override"
-	"${APPDIR}/usr/lib-override/ld-linux-'$ARCHDASH'.so.2" "${APPDIR}/usr/bin/unezquake-linux-'$ARCH'" $*
+	"${APPDIR}/usr/lib-override/ld-linux-'$ARCHDASH'.so.2" "${APPDIR}/usr/bin/neoquake-linux-'$ARCH'" $*
 fi
 exitstatus=$?
 if [ $exitstatus -eq 0 ];then
@@ -84,7 +84,7 @@ REVISION=$(git log -n 1|head -1|awk '{print $2}'|cut -c1-6)
 if ! [[ -x "$EXECUTABLE" ]]; then
 	export SKIP_DEPS
 	chmod +x ./build-linux.sh && nice ./build-linux.sh || exit 3
-	EXECUTABLE="build/unezquake-linux-$ARCH"
+	EXECUTABLE="build/neoquake-linux-$ARCH"
 fi
 
 #build test program
@@ -96,11 +96,11 @@ cp -f $EXECUTABLE "$DIR/AppDir/usr/bin/." || exit 4
 rm -f "$DIR/AppDir/AppRun"
 echo "$QUAKE_SCRIPT" > "$DIR/AppDir/AppRun" || exit 4
 chmod +x "$DIR/AppDir/AppRun" || exit 4
-echo "$DESKTOP_ENTRY" > "$DIR/AppDir/io.github.unezQuake.desktop" || exit 4
+echo "$DESKTOP_ENTRY" > "$DIR/AppDir/io.github.NeoQuake.desktop" || exit 4
 cp "$DIR/dist/linux/io.github.ezQuake.128.png" "$DIR/AppDir/io.github.ezQuake.png"||true #copy over quake png if it exists
 mkdir -p "$DIR/AppDir/usr/share/metainfo"
-sed 's,EZQUAKE_VERSION,'$VERSION-$REVISION',g;s,EZQUAKE_DATE,'$(date +%F)',g' "$DIR/misc/appimage/ezquake.appdata.xml.template" > "$DIR/AppDir/usr/share/metainfo/unezquake.appdata.xml"
-ldd "$DIR/AppDir/usr/bin/unezquake-linux-$ARCH" | \
+sed 's,EZQUAKE_VERSION,'$VERSION-$REVISION',g;s,EZQUAKE_DATE,'$(date +%F)',g' "$DIR/misc/appimage/ezquake.appdata.xml.template" > "$DIR/AppDir/usr/share/metainfo/neoquake.appdata.xml"
+ldd "$DIR/AppDir/usr/bin/neoquake-linux-$ARCH" | \
 	grep --color=never -v libGL| \
 	grep --color=never -v libdrm.so | \
 	grep --color=never -v libgbm.so | \
@@ -114,4 +114,4 @@ cp -f "$(ldconfig -Np|grep --color=never libpthread.so.0$|grep --color=never $(u
 cp -Lf "/lib64/ld-linux-${ARCHDASH}.so.2" "$DIR/AppDir/usr/lib-override/." || exit 6
 
 cd "$DIR" || exit 5
-./appimagetool AppDir unezQuake-$ARCH.AppImage || exit 7
+./appimagetool AppDir NeoQuake-$ARCH.AppImage || exit 7

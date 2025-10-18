@@ -489,6 +489,13 @@ static const char* cache_pic_paths[] = {
 	"gfx/p_load.lmp",
 	"gfx/p_save.lmp",
 	"gfx/p_multi.lmp",
+	"gfx/quickplay.lmp",
+	"gfx/servers.lmp",
+	"gfx/training.lmp",
+	"gfx/demos.lmp",
+	"gfx/settings.lmp",
+	"gfx/hudeditor.lmp",
+	"gfx/quit.lmp",
 	"gfx/ranking.lmp",
 	"gfx/complete.lmp",
 	"gfx/inter.lmp",
@@ -506,7 +513,7 @@ qbool Draw_KeepOffAtlas(const char* path)
 	}
 
 	// Single-player & main menu items - take up too much space for no high-performance path
-	for (i = CACHEPIC_TTL_MAIN; i <= CACHEPIC_P_MULTI && !result; ++i) {
+	for (i = CACHEPIC_TTL_MAIN; i <= CACHEPIC_QUIT && !result; ++i) {
 		result |= !strcmp(path, cache_pic_paths[i]);
 	}
 
