@@ -92,7 +92,7 @@ void VersionCheck_Shutdown(void);
 qbool VersionCheck_GetLatest(char dest[VERSION_MAX_LEN]);
 
 #ifndef SERVERONLY
-#define SERVER_NAME         "NEOQUAKE"
+#define SERVER_NAME         "REQUAKE"
 #else
 #define SERVER_NAME         "MVDSV"
 #endif

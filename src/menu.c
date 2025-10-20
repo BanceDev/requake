@@ -394,11 +394,10 @@ bigmenu_items_t mainmenu_items[] = {
 	{"Training", M_Menu_Options_f, CACHEPIC_TRAINING},
 	{"Replays", M_Menu_Demos_f, CACHEPIC_DEMOS},
 	{"Settings", M_Menu_Options_f, CACHEPIC_SETTINGS},
-	{"HUD Editor", M_Menu_Help_f, CACHEPIC_HUD_EDITOR},
 	{"Quit", M_Menu_Quit_f, CACHEPIC_QUIT}
 };
 
-#define    MAIN_ITEMS     7
+#define    MAIN_ITEMS     6
 
 // mcharset must be supported in this point
 static void M_BigMenu_DrawItems(bigmenu_items_t *menuitems, const unsigned int items, int left_corner, int top_corner, int *width, int *height)

@@ -1,9 +1,5 @@
-![Banner](https://github.com/BanceDev/neoquake/blob/main/neoquake.png)
-
----
-
-# NeoQuake — A Next Generation QuakeWorld Client
-NeoQuake is a fork of the unezQuake client that is focused on creating an experience that takes from the advancements in the FPS genre over the decades.
+# reQuake — A Next Generation QuakeWorld Client
+reQuake is a fork of the unezQuake client that is focused on creating an experience that takes from the advancements in the FPS genre over the decades.
 
 ## Features
 

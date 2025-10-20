@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(neoquake C)
+project(requake C)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     enable_language(OBJC)
@@ -144,7 +144,7 @@ endif()
 
 # Place special CMake targets in separate VS/Xcode folder
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-set_property(GLOBAL PROPERTY VS_STARTUP_PROJECT "neoquake")
+set_property(GLOBAL PROPERTY VS_STARTUP_PROJECT "requake")
 
 set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
 
@@ -791,8 +791,8 @@ set_source_files_properties(${macos_icon} PROPERTIES MACOSX_PACKAGE_LOCATION Res
 # Windows icon, and exe metadata
 set(windows_icon "${CMAKE_CURRENT_BINARY_DIR}/ezQuake.rc")
 set(EZQUAKE_RESOURCE_AUTHOR "QW-Group")
-set(EZQUAKE_RESOURCE_NAME "NeoQuake")
-set(EZQUAKE_RESOURCE_DESCRIPTION "NeoQuake - a QuakeWorld client")
+set(EZQUAKE_RESOURCE_NAME "reQuake")
+set(EZQUAKE_RESOURCE_DESCRIPTION "reQuake - a QuakeWorld client")
 set(EZQUAKE_RESOURCE_ICON "${PROJECT_SOURCE_DIR}/dist/windows/ezquake.ico")
 set(EZQUAKE_RESOURCE_VERSION "${version_major},${version_minor},${version_patch},${version_build}")
 set(EZQUAKE_RESOURCE_COMMIT "${version_commit}")
@@ -806,7 +806,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(TARGET_TYPE MACOSX_BUNDLE)
 endif()
 
-add_executable(neoquake ${TARGET_TYPE}
+add_executable(requake ${TARGET_TYPE}
         ${main}
         ${sys}
         ${central}
@@ -826,11 +826,11 @@ add_executable(neoquake ${TARGET_TYPE}
         $<IF:$<PLATFORM_ID:Windows>,${windows_icon},>
 )
 
-target_include_directories(neoquake PRIVATE
+target_include_directories(requake PRIVATE
         ${SOURCE_DIR}/qwprot/src
 )
 
-target_compile_definitions(neoquake PRIVATE
+target_compile_definitions(requake PRIVATE
         BUILDSTRING="${CMAKE_SYSTEM_NAME}"
         CPUSTRING="${CMAKE_SYSTEM_PROCESSOR}"
 
@@ -859,7 +859,7 @@ target_compile_definitions(neoquake PRIVATE
         PCRE2_CODE_UNIT_WIDTH=8
 )
 
-target_link_libraries(neoquake PRIVATE
+target_link_libraries(requake PRIVATE
         $<$<BOOL:${RENDERER_MODERN_OPENGL}>:shaders_modern>
         $<$<BOOL:${RENDERER_CLASSIC_OPENGL}>:shaders_classic>
         shaders_shared
@@ -894,45 +894,45 @@ target_link_libraries(neoquake PRIVATE
 )
 
 if(MATH)
-    target_link_libraries(neoquake PRIVATE ${MATH})
+    target_link_libraries(requake PRIVATE ${MATH})
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    string(TOLOWER "NeoQuake" EXECUTABLE_NAME)
+    string(TOLOWER "reQuake" EXECUTABLE_NAME)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    string(TOLOWER "neoquake" EXECUTABLE_NAME)
+    string(TOLOWER "requake" EXECUTABLE_NAME)
 else()
-    string(TOLOWER "neoquake-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}" EXECUTABLE_NAME)
+    string(TOLOWER "requake-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}" EXECUTABLE_NAME)
 endif()
 
-set_target_properties(neoquake PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
+set_target_properties(requake PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     get_target_property(version git_version GIT_DESCRIBE)
 
-    set_target_properties(neoquake PROPERTIES
-            XCODE_ATTRIBUTE_PRODUCT_NAME                            "NeoQuake"
-            XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER               "com.neoquake.NeoQuake"
+    set_target_properties(requake PROPERTIES
+            XCODE_ATTRIBUTE_PRODUCT_NAME                            "reQuake"
+            XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER               "com.requake.reQuake"
             XCODE_ATTRIBUTE_MARKETING_VERSION                       "${version}"
             XCODE_ATTRIBUTE_CURRENT_PROJECT_VERSION                 "${version}"
             XCODE_ATTRIBUTE_LLVM_LTO                                $<IF:$<OR:$<CONFIG:Debug>,$<NOT:$<BOOL:${ENABLE_LTO}>>>,NO,Monolithic>
             XCODE_ATTRIBUTE_GCC_OPTIMIZATION_LEVEL                  $<IF:$<CONFIG:Debug>,0,3>
             XCODE_ATTRIBUTE_DEAD_CODE_STRIPPING                     YES
             XCODE_ATTRIBUTE_GENERATE_INFOPLIST_FILE                 YES
-            XCODE_ATTRIBUTE_INFOPLIST_KEY_CFBundleDisplayName       "NeoQuake"
+            XCODE_ATTRIBUTE_INFOPLIST_KEY_CFBundleDisplayName       "reQuake"
             XCODE_ATTRIBUTE_INFOPLIST_KEY_LSApplicationCategoryType "public.app-category.action-games"
             XCODE_ATTRIBUTE_INFOPLIST_KEY_NSHumanReadableCopyright  "GNU General Public License, version 2"
             XCODE_ATTRIBUTE_INFOPLIST_FILE                          "${PROJECT_SOURCE_DIR}/dist/macOS/MacOSXBundleInfo.plist.in"
     )
 
     if(ENABLE_SANDBOX)
-        set_target_properties(neoquake PROPERTIES
+        set_target_properties(requake PROPERTIES
                 XCODE_ATTRIBUTE_ENABLE_APP_SANDBOX                                         YES
                 XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME                                    YES
                 XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS[variant=Debug]          YES
                 XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS[variant=RelWithDebInfo] YES
                 XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS[variant=Release]        NO
-                XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS "dist/macOS/neoquake.entitlements.plist"
+                XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS "dist/macOS/requake.entitlements.plist"
         )
     endif()
 endif()

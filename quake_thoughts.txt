@@ -1,4 +1,4 @@
-NeoQuake: The Next Gen QuakeWorld Client
+reQuake: The Next Gen QuakeWorld Client
 
 Main Menu:
 TF2/DBT inspired menu. Menu options either across top row or left aligned column.
