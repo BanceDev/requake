@@ -375,7 +375,7 @@ void M_Menu_Main_f (void) {
 #define BIGLETTER_WIDTH	64
 #define BIGLETTER_HEIGHT	64
 #define BIGMENU_LEFT				24
-#define BIGMENU_TOP					32
+#define BIGMENU_TOP					42
 #define BIGMENU_ITEMS_SCALE			0.3
 #define	BIGMENU_LETTER_SPACING		-2
 #define BIGMENU_VERTICAL_PADDING	2
@@ -441,34 +441,28 @@ static void M_BigMenu_DrawItems(bigmenu_items_t *menuitems, const unsigned int i
 void M_Main_Draw (void) {
 	int f = (int) (curtime * 10) % 6;
 	mpic_t *p;
+	mpic_t *qplaque;
+	mpic_t *portrait;
 	int itemheight;
 
-	// the Main Manu heading
+	portrait = Draw_CachePic (CACHEPIC_PORTRAIT);
+	// Draw portrait at full screen size
+	Draw_FitPic(0, 0, menuwidth, menuheight, portrait);
+	
 	p = Draw_CachePic (CACHEPIC_TTL_MAIN);
 	Draw_Pic((320-p->width)/2 + ((menuwidth - 320)>>1), 0, p);
+	
+	qplaque = Draw_CachePic (CACHEPIC_QPLAQUE);
+	M_DrawPic (8, 16, qplaque);
+
 
 	// Main Menu items
-	if (Draw_BigFontAvailable()) {
-		newmainmenu = true;
-		m_main_window.x = BIGMENU_LEFT + (menuwidth - 320)/2;
-		m_main_window.y = BIGMENU_TOP + m_yofs;
-		M_BigMenu_DrawItems(mainmenu_items, BIGMENU_ITEMS_COUNT(mainmenu_items), m_main_window.x, m_main_window.y,
-						 &m_main_window.w, &m_main_window.h);
-		itemheight = m_main_window.h / BIGMENU_ITEMS_COUNT(mainmenu_items);
-	}
-	else {
-		newmainmenu = false;
-		p = Draw_CachePic (CACHEPIC_MAINMENU);
-		m_main_window.w = p->width;
-		m_main_window.h = p->height;
-		M_DrawTransPic_GetPoint (72, 32, &m_main_window.x, &m_main_window.y, p);
-		
-		// main menu specific correction, mainmenu.lmp|png have some useless extra space at the bottom
-		// that makes the mouse pointer position calculation imperfect
-		m_main_window.h *= 0.9;
-
-		itemheight = 20;
-	}	
+	newmainmenu = true;
+	m_main_window.x = BIGMENU_LEFT + (menuwidth - 320)/2;
+	m_main_window.y = BIGMENU_TOP + m_yofs;
+	M_BigMenu_DrawItems(mainmenu_items, BIGMENU_ITEMS_COUNT(mainmenu_items), m_main_window.x, m_main_window.y,
+					 &m_main_window.w, &m_main_window.h);
+	itemheight = m_main_window.h / BIGMENU_ITEMS_COUNT(mainmenu_items);
 
 	M_DrawTransPic (8, BIGMENU_TOP + m_main_cursor * itemheight,
 		Draw_CachePic(CACHEPIC_MENUDOT1 + f)
