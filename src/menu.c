@@ -375,7 +375,7 @@ void M_Menu_Main_f (void) {
 #define BIGLETTER_WIDTH	64
 #define BIGLETTER_HEIGHT	64
 #define BIGMENU_LEFT				24
-#define BIGMENU_TOP					42
+#define BIGMENU_TOP					52
 #define BIGMENU_ITEMS_SCALE			0.3
 #define	BIGMENU_LETTER_SPACING		-2
 #define BIGMENU_VERTICAL_PADDING	2
@@ -453,7 +453,7 @@ void M_Main_Draw (void) {
 	Draw_Pic((320-p->width)/2 + ((menuwidth - 320)>>1), 0, p);
 	
 	qplaque = Draw_CachePic (CACHEPIC_QPLAQUE);
-	M_DrawPic (8, 16, qplaque);
+	M_DrawPic (8, 28, qplaque);
 
 
 	// Main Menu items
