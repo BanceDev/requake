@@ -24,6 +24,9 @@ void init_discord_activity(struct IDiscordActivityManager *manager) {
 }
 
 void menu_discord_activity(void) {
+  if (global_man == NULL)
+    return;
+
   struct DiscordActivity activity;
   memset(&activity, 0, sizeof(activity));
 
@@ -41,6 +44,9 @@ void menu_discord_activity(void) {
 }
 
 void map_discord_activity(const char *mode, const char *map) {
+  if (global_man == NULL)
+    return;
+
   struct DiscordActivity activity;
   memset(&activity, 0, sizeof(activity));
   char mapstate[256];
