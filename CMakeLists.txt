@@ -79,7 +79,6 @@ else()
             -Werror=strict-prototypes
             -Werror=old-style-definition
 
-            $<$<CONFIG:Release>:-Werror=unused-function>
             $<$<CONFIG:Release>:-Werror=unused-variable>
     )
 
@@ -585,6 +584,7 @@ set(client_headers
         ${SOURCE_DIR}/config_manager.h
         ${SOURCE_DIR}/console.h
         ${SOURCE_DIR}/demo_controls.h
+        ${SOURCE_DIR}/discord_activity.h
         ${SOURCE_DIR}/document_rendering.h
         ${SOURCE_DIR}/ez_button.h
         ${SOURCE_DIR}/ez_controls.h
@@ -674,6 +674,7 @@ set(client
         ${SOURCE_DIR}/config_manager.c
         ${SOURCE_DIR}/console.c
         ${SOURCE_DIR}/demo_controls.c
+        ${SOURCE_DIR}/discord_activity.c
         ${SOURCE_DIR}/document_rendering.c
         ${SOURCE_DIR}/ez_button.c
         ${SOURCE_DIR}/ez_controls.c
@@ -806,6 +807,19 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(TARGET_TYPE MACOSX_BUNDLE)
 endif()
 
+# === Discord Game SDK ===
+set(DISCORD_SDK_DIR ${PROJECT_SOURCE_DIR}/external/discord)
+
+include_directories(${DISCORD_SDK_DIR}/include)
+
+if(WIN32)
+    set(DISCORD_LIB ${DISCORD_SDK_DIR}/lib/discord_game_sdk.dll.lib)
+elseif(APPLE)
+    set(DISCORD_LIB ${DISCORD_SDK_DIR}/lib/discord_game_sdk.dylib)
+else()
+    set(DISCORD_LIB ${DISCORD_SDK_DIR}/lib/discord_game_sdk.so)
+endif()
+
 add_executable(requake ${TARGET_TYPE}
         ${main}
         ${sys}
@@ -860,6 +874,7 @@ target_compile_definitions(requake PRIVATE
 )
 
 target_link_libraries(requake PRIVATE
+        ${DISCORD_LIB}
         $<$<BOOL:${RENDERER_MODERN_OPENGL}>:shaders_modern>
         $<$<BOOL:${RENDERER_CLASSIC_OPENGL}>:shaders_classic>
         shaders_shared

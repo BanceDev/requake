@@ -20,6 +20,7 @@ $Id: cl_parse.c,v 1.135 2007-10-28 19:56:44 qqshka Exp $
 */
 
 #include "common.h"
+#include "discord_activity.h"
 #include "quakedef.h"
 #include "gl_model.h"
 #include "cdaudio.h"
@@ -1784,8 +1785,17 @@ void CL_ParseModellist (qbool extended)
 				if (!com_serveractive) 
 				{
 					char mapname[MAX_QPATH];
+					char *mode = NULL;
 					COM_StripExtension (COM_SkipPath(cl.model_name[1]), mapname, sizeof(mapname));
 					Cvar_ForceSet (&host_mapname, mapname);
+					mode = Info_ValueForKey(cl.serverinfo, "mode");  // Common on KTX servers
+					if (!mode[0]) {
+						mode = Info_ValueForKey(cl.serverinfo, "ktxmode");  // Race mode etc
+					}
+					if (!mode[0]) {
+						mode = Info_ValueForKey(cl.serverinfo, "deathmatch");  // Fallback
+					}
+					map_discord_activity(mode, mapname);
 				}
 		}
 
@@ -1824,8 +1834,17 @@ void CL_ParseModellist (qbool extended)
 				if (!com_serveractive) 
 				{
 					char mapname[MAX_QPATH];
+					char *mode = NULL;
 					COM_StripExtension (COM_SkipPath(cl.model_name[1]), mapname, sizeof(mapname));
 					Cvar_ForceSet (&host_mapname, mapname);
+					mode = Info_ValueForKey(cl.serverinfo, "mode");  // Common on KTX servers
+					if (!mode[0]) {
+						mode = Info_ValueForKey(cl.serverinfo, "ktxmode");  // Race mode etc
+					}
+					if (!mode[0]) {
+						mode = Info_ValueForKey(cl.serverinfo, "deathmatch");  // Fallback
+					}
+					map_discord_activity(mode, mapname);
 				}
 		} while (*str);
 	}

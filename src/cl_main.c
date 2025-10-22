@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_main.c  -- client main loop
 
+#include "discord_activity.h"
 #include "quakedef.h"
 #include "cdaudio.h"
 #include "cl_slist.h"
@@ -1408,6 +1409,9 @@ void CL_Disconnect (void)
 	QTV_FreeUserList();
 
 	Cvar_ForceSet(&host_mapname, ""); // Notice mapname not valid yet
+	
+	// set discord status back to main menu
+	menu_discord_activity();
 }
 
 void CL_Disconnect_f (void) 

@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "server.h"
 #include "pcre2.h"
 #include <shlobj.h>
+#include "discord_activity.h"
 
 // "Starting with the Release 302 drivers, application developers can direct the
 // Optimus driver at runtime to use the High Performance Graphics to render any
@@ -1318,6 +1319,26 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	Host_Init (argc, argv, memsize);
 
 	oldtime = Sys_DoubleTime ();
+	
+	// init discord rpc
+	struct IDiscordCore *core = NULL;
+	struct IDiscordActivityManager *activities = NULL;
+
+	struct DiscordCreateParams params;
+	DiscordCreateParamsSetDefault(&params);
+	params.client_id = 1336809058136756245;
+	params.flags = DiscordCreateFlags_NoRequireDiscord;
+	params.event_data = NULL;
+
+	enum EDiscordResult result = DiscordCreate(DISCORD_VERSION, &params, &core);
+	if (result != DiscordResult_Ok) {
+		fprintf(stderr, "Discord SDK init failed (Discord likely not running): %d\n", result);
+		core = NULL; // mark as unavailable
+	} else {
+		activities = core->get_activity_manager(core);
+		init_discord_activity(activities);
+		printf("Discord initialized and activity set!\n");
+	}
 
     // Main window message loop.
 	while (1) 
@@ -1326,8 +1347,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		time = newtime - oldtime;
 		Host_Frame (time);
 		oldtime = newtime;
-
+		if (core)
+			core->run_callbacks(core);
 	}
+	core->destroy(core);
     return TRUE;	/* return success of application */
 }
 
