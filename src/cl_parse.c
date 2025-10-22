@@ -20,7 +20,6 @@ $Id: cl_parse.c,v 1.135 2007-10-28 19:56:44 qqshka Exp $
 */
 
 #include "common.h"
-#include "discord_activity.h"
 #include "quakedef.h"
 #include "gl_model.h"
 #include "cdaudio.h"
@@ -49,6 +48,7 @@ $Id: cl_parse.c,v 1.135 2007-10-28 19:56:44 qqshka Exp $
 #include "r_brushmodel_sky.h"
 #include "central.h"
 #include <stdio.h>
+#include "discord_activity.h"
 
 int CL_LoginImageId(const char* name);
 

@@ -18,7 +18,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_main.c  -- client main loop
 
-#include "discord_activity.h"
 #include "quakedef.h"
 #include "cdaudio.h"
 #include "cl_slist.h"
@@ -72,6 +71,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "r_renderer.h"
 #include "r_performance.h"
 #include "r_program.h"
+#include "discord_activity.h"
 
 extern qbool ActiveApp, Minimized;
 
