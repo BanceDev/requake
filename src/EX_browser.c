@@ -355,6 +355,191 @@ static void PasteServerToConsole (server_data *s)
 }
 
 
+typedef enum {
+    QP_MODE_1ON1,
+    QP_MODE_2ON2,
+    QP_MODE_4ON4,
+    QP_MODE_DMM4
+} quickplay_mode_t;
+
+// Helper function to check if a mode string matches the desired mode
+static qbool QP_ModeMatches(const char *mode_str, quickplay_mode_t desired_mode)
+{
+    if (!mode_str || !mode_str[0]) {
+        return false;
+    }
+    
+    switch (desired_mode) {
+        case QP_MODE_1ON1:
+            return !strcmp(mode_str, "1on1");
+        case QP_MODE_2ON2:
+            return !strcmp(mode_str, "2on2");
+        case QP_MODE_4ON4:
+            return !strcmp(mode_str, "4on4");
+        case QP_MODE_DMM4:
+            return !strcmp(mode_str, "1on1");
+        default:
+            return false;
+    }
+}
+
+// Get the effective ping for a server (considering routes if enabled)
+static int QP_GetServerPing(server_data *s)
+{
+    if (sb_findroutes.integer && s->bestping > 0) {
+        return s->bestping;
+    }
+    return s->ping;
+}
+
+// Check if server is full
+static qbool QP_IsServerFull(server_data *s)
+{
+    char *maxclients_str = ValueForKey(s, "maxclients");
+    int maxclients = maxclients_str ? atoi(maxclients_str) : 255;
+    return s->playersn >= maxclients;
+}
+
+// Main quick play function
+static server_data* QP_FindBestServer(quickplay_mode_t mode)
+{
+    int i;
+    server_data *best_nonempty = NULL;
+    server_data *best_full = NULL;
+    int best_nonempty_ping = 9999;
+    int best_full_ping = 9999;
+    
+    SB_ServerList_Lock();
+    
+    // Make sure server list is filtered and sorted
+    if (rebuild_servers_list) {
+        Rebuild_Servers_List();
+    }
+    
+    // Search through all servers
+    for (i = 0; i < serversn; i++) {
+        server_data *s = servers[i];
+        char *mode_str;
+        char *dm_str;
+        int ping;
+        qbool is_full;
+        
+        // Skip servers with no ping (unreachable)
+        if (s->ping < 0) {
+            continue;
+        }
+        
+        // Skip proxies
+        if (s->qizmo || s->qwfwd) {
+            continue;
+        }
+        
+        // Check if mode matches
+        mode_str = ValueForKey(s, "mode");
+        if (!QP_ModeMatches(mode_str, mode)) {
+            continue;
+        }
+
+		// if solo mode check that deathmatch matches
+		if (mode == QP_MODE_1ON1) {
+			dm_str = ValueForKey(s, "deathmatch");
+			if (strcmp(dm_str, "3")) {
+				continue;
+			}
+		}
+		if (mode == QP_MODE_DMM4) {
+			dm_str = ValueForKey(s, "deathmatch");
+			if (strcmp(dm_str, "4")) {
+				continue;
+			}
+		}
+        
+        ping = QP_GetServerPing(s);
+        is_full = QP_IsServerFull(s);
+        
+        // Categorize servers
+        if (is_full) {
+            // Track best full server (lowest ping)
+            if (ping < best_full_ping) {
+                best_full_ping = ping;
+                best_full = s;
+            }
+        } else if (s->playersn > 0) {
+            // Non-empty, non-full server - this is our priority
+            if (ping < best_nonempty_ping) {
+                best_nonempty_ping = ping;
+                best_nonempty = s;
+            }
+        }
+    }
+    
+    SB_ServerList_Unlock();
+    
+    // Prioritize non-empty, non-full servers
+    if (best_nonempty) {
+        return best_nonempty;
+    }
+    
+    // Fall back to full servers
+    return best_full;
+}
+
+qbool QP_QuickPlay(const char *mode_arg) {
+    quickplay_mode_t mode;
+    server_data *target_server;
+
+    // Parse mode argument
+    if (!strcmp(mode_arg, "1on1")) {
+        mode = QP_MODE_1ON1;
+    } else if (!strcmp(mode_arg, "dmm4")) {
+        mode = QP_MODE_DMM4;
+    } else if (!strcmp(mode_arg, "2on2")) {
+        mode = QP_MODE_2ON2;
+    } else if (!strcmp(mode_arg, "4on4")) {
+        mode = QP_MODE_4ON4;
+    } else {
+        Com_Printf("Invalid mode: %s\n", mode_arg);
+        Com_Printf("  Valid modes: 1on1, 2on2, 4on4\n");
+        return true;
+    }
+
+    // Find best server
+    Com_Printf("Searching for %s server...\n", mode_arg);
+    target_server = QP_FindBestServer(mode);
+
+    if (!target_server) {
+        Com_Printf("No available %s servers found.\n", mode_arg);
+        return true;
+    }
+
+    // Connect to the server
+    if (QP_IsServerFull(target_server)) {
+        Com_Printf("Connecting to %s (full, joining as spectator)...\n", 
+                   target_server->display.name[0] ? target_server->display.name : target_server->display.ip);
+        Observe_Server(target_server);
+    } else {
+        Com_Printf("Connecting to %s (%d players)...\n",
+                   target_server->display.name[0] ? target_server->display.name : target_server->display.ip,
+                   target_server->playersn);
+        Join_Server(target_server);
+    }
+	return false;
+}
+
+// Quick play command handler
+void QP_QuickPlay_f(void)
+{
+    const char *mode_arg;
+    if (Cmd_Argc() != 2) {
+        Com_Printf("Usage: quickplay <mode>\n");
+        Com_Printf("  Modes: 1on1, 2on2, 4on4, dmm4\n");
+        return;
+    }
+
+    mode_arg = Cmd_Argv(1);
+    QP_QuickPlay(mode_arg);
+}
+
 //
 // browser routines
 //
@@ -3301,7 +3486,8 @@ void Browser_Init (void)
 	Cmd_AddCommand("sb_sourcesupdate", SB_Sources_Update_f);
 	Cmd_AddCommand("sb_buildpingtree", SB_PingTree_Build);
 	Cmd_AddCommand("sb_proxygetpings", SB_ProxyGetPings_f);
-
+	Cmd_AddCommand("quickplay", QP_QuickPlay_f);
+	
 	if (sb_listcache.integer) {
 		SB_Serverlist_Unserialize_f();
 		SB_Proxylist_Unserialize_f();

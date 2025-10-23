@@ -490,6 +490,8 @@ static const char* cache_pic_paths[] = {
 	"gfx/p_save.lmp",
 	"gfx/p_multi.lmp",
 	"gfx/quickplay.lmp",
+	"gfx/solo.lmp",
+	"gfx/teamplay.lmp",
 	"gfx/servers.lmp",
 	"gfx/training.lmp",
 	"gfx/demos.lmp",
