@@ -2528,6 +2528,18 @@ void CL_ProcessServerInfo (void)
 			strlcpy(cl.fixed_team_names[3], s, sizeof(cl.fixed_team_names[3]));
 		}
 	}
+	char mapname[MAX_QPATH];
+	char *mode = NULL;
+	COM_StripExtension (COM_SkipPath(cl.model_name[1]), mapname, sizeof(mapname));
+	Cvar_ForceSet (&host_mapname, mapname);
+	mode = Info_ValueForKey(cl.serverinfo, "mode");  // Common on KTX servers
+	if (!mode[0]) {
+		mode = Info_ValueForKey(cl.serverinfo, "ktxmode");  // Race mode etc
+	}
+	if (!mode[0]) {
+		mode = Info_ValueForKey(cl.serverinfo, "deathmatch");  // Fallback
+	}
+	map_discord_activity(mode, mapname);
 }
 
 // Parse a string looking like this: //vwep vwplayer w_axe w_shot w_shot2

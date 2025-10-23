@@ -34,8 +34,6 @@ void menu_discord_activity(void) {
   strcpy(activity.state, "Playing");
   strcpy(activity.details, "Main Menu");
 
-  activity.timestamps.start = time(NULL);
-
   struct DiscordActivityAssets *assets = &activity.assets;
   strcpy(assets->large_image, "default");
   strcpy(assets->large_text, "reQuake");
@@ -54,8 +52,6 @@ void map_discord_activity(const char *mode, const char *map) {
   strcpy(activity.name, "reQuake");
   strcpy(activity.state, "Playing");
   strcpy(activity.details, mapstate);
-
-  activity.timestamps.start = time(NULL);
 
   struct DiscordActivityAssets *assets = &activity.assets;
   strcpy(assets->large_image, map);
