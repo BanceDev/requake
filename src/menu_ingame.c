@@ -52,8 +52,11 @@ MENU_ALIAS(MIng_Options,"menu_options",false);
 MENU_ALIAS(MIng_Join,"join",true);
 MENU_ALIAS(MIng_Observe,"observe",true);
 MENU_ALIAS(MIng_Disconnect,"disconnect",true);
+MENU_ALIAS(MIng_BotEnable,"botcmd enable",true);
 MENU_ALIAS(MIng_Ready, "ready",true);
 MENU_ALIAS(MIng_Break, "break",true);
+MENU_ALIAS(MIng_BotAddBot, "botcmd addbot",false);
+MENU_ALIAS(MIng_BotRemoveBot, "botcmd removebot",false);
 MENU_ALIAS(MIng_SkillUp, "skillup",false);
 MENU_ALIAS(MIng_SkillDown, "skilldown",false);
 MENU_ALIAS(MIng_AddBot, "addbot",false);
@@ -86,6 +89,9 @@ setting ingame_menu_entries[] = {
 	ADDSET_ACTION("Break", MIng_Break, ""),
 	ADDSET_ACTION("Join", MIng_Join, ""),
 	ADDSET_ACTION("Observe", MIng_Observe, ""),
+	ADDSET_ACTION("Enable Bots", MIng_BotEnable, ""),
+	ADDSET_ACTION("Add Bot", MIng_BotAddBot, ""),
+	ADDSET_ACTION("Remove Bot", MIng_BotRemoveBot, ""),
 	ADDSET_ACTION("Disconnect", MIng_Disconnect, ""),
 	ADDSET_BLANK(),
 	ADDSET_ACTION("Server Browser", MIng_ServerBrowser, ""),

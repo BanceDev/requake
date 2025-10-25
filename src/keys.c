@@ -1666,6 +1666,21 @@ void Key_SetBinding (int keynum, const char *binding) {
 	keybindings[keynum] = Q_strdup(binding);
 }
 
+int Key_FindBinding(const char *command) {
+    int i;
+
+    if (!command || !command[0])
+        return -1;
+
+    for (i = 0; i < (sizeof(keybindings) / sizeof(*keybindings)); i++) {
+        if (keybindings[i] && !strcmp(keybindings[i], command)) {
+            return i;
+        }
+    }
+
+    return -1;  // Not found
+}
+
 void Key_Unbind (int keynum) {
 	if (keynum == -1)
 		return;

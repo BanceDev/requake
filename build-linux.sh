@@ -157,7 +157,7 @@ fi
 cmake -B build "${GENERATOR}" -DCMAKE_BUILD_TYPE=Release
 
 step "Compiling sources (this might take a while, please wait)..."
-cmake --build build --parallel
+cmake --build build
 
 printf "\n${GREEN}Build completed successfully.${NC}\n"
 printf "Copy ${YELLOW}build/requake-linux-${CPU}${NC} into your quake directory.\n\n"

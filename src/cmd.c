@@ -80,6 +80,7 @@ cbuf_t cbuf_safe, cbuf_formatted_comms;
 cbuf_t cbuf_server;
 
 cbuf_t *cbuf_current = NULL;
+qbool is_ready = false;
 
 static void OnChange_remote_capabilities(cvar_t *var, char *string, qbool *cancel)
 {
@@ -139,6 +140,21 @@ add:
 		cmd = strtok(NULL, ",");
 	}
 	Q_free(tmp);
+}
+
+static void Cmd_TrackReadyState(void)
+{
+    const char *cmd = Cmd_Argv(0);
+
+    if (!strcasecmp(cmd, "ready")) {
+        is_ready = true;
+    }
+    else if (!strcasecmp(cmd, "break")) {
+        is_ready = false;
+    }
+    else if (!strcasecmp(cmd, "toggleready")) {
+        is_ready = !is_ready;
+    }
 }
 
 qbool CL_IsDownloadableFileExtension(const char *filename)
@@ -2044,6 +2060,7 @@ checkaliases:
 	}
 
 done:
+	Cmd_TrackReadyState();
 	cbuf_current = oldcontext;
 }
 

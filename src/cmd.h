@@ -48,6 +48,7 @@ extern cbuf_t cbuf_formatted_comms;
 extern cbuf_t cbuf_svc; // svc_stufftext commands
 extern cbuf_t cbuf_server;  // mod commands
 extern cbuf_t *cbuf_current;
+extern qbool is_ready;
 
 void Cbuf_AddTextEx (cbuf_t *cbuf, const char *text);
 void Cbuf_InsertTextEx (cbuf_t *cbuf, const char *text);
