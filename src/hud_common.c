@@ -58,6 +58,7 @@ void TeamHold_DrawPercentageBar(
 void SCR_HUD_DrawTracker(hud_t* hud);
 void SCR_HUD_WeaponStats(hud_t *hud);
 void WeaponStats_HUDInit(void);
+void HitIndicator_HUDInit(void);
 void TeamInfo_HudInit(void);
 void Inlay_HudInit(void);
 void Speed_HudInit(void);
@@ -1029,6 +1030,7 @@ void CommonDraw_Init(void)
 	Speed_HudInit();
 	Radar_HudInit();
 	WeaponStats_HUDInit();
+	HitIndicator_HUDInit();
 	TeamInfo_HudInit();
     Inlay_HudInit();
 	TeamHold_HudInit();

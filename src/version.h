@@ -78,7 +78,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 // Note: for server mods to detect version, change VERSION_NUM below
-#define VERSION_NUMBER "0.1.1-dev"
+#define VERSION_NUMBER "0.2.0-dev"
 #define VERSION_MAX_LEN 32
 
 void CL_Version_f(void);
@@ -108,14 +108,13 @@ qbool VersionCheck_GetLatest(char dest[VERSION_MAX_LEN]);
 #define GIT_COMMIT          ""
 
 // ezQuake URLs etc
-#define EZ_VERSION_WEBSITE "http://www.ezquake.com/"
 #define EZ_MVD_SIGNOFF \
 	"\x1d\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1f\n" \
-	"Recorded by ezQuake (http://www.ezquake.com/)\n" \
+	"Recorded by reQuake\n" \
 	"Discord: http://discord.quake.world/\n" \
 	"Forums: http://quakeworld.nu/\n" \
 	"\x1d\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1f\n"
 #define EZ_QWD_SIGNOFF EZ_MVD_SIGNOFF
-	// "\x1d\x1e\x1e\x1e\x1e\x1e\x1e Recorded by ezQuake \x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1f"
+	// "\x1d\x1e\x1e\x1e\x1e\x1e\x1e Recorded by reQuake \x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1f"
 
 #endif /* !__VERSION_H__ */

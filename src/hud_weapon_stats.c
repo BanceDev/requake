@@ -247,3 +247,132 @@ void WeaponStats_CommandInit(void)
 		Cmd_AddCommand("-cl_wp_stats", SCR_MvdWeaponStatsOff_f);
 	}
 }
+
+// Structure to track hit detection
+typedef struct hit_detector_s {
+	int last_hits[wpMAX];
+	double hit_time;
+	qbool hit_active;
+} hit_detector_t;
+
+static hit_detector_t hit_detector;
+
+// Call this function periodically to check for new hits
+static void HIT_DetectHit(ws_player_t *ws_cl)
+{
+	int wp;
+	qbool new_hit = false;
+
+	if (!ws_cl) {
+		return;
+	}
+
+	// Check each weapon for increased hit count
+	for (wp = wpAXE; wp < wpMAX; wp++) {
+		if (ws_cl->wpn[wp].hits > hit_detector.last_hits[wp]) {
+			new_hit = true;
+			hit_detector.last_hits[wp] = ws_cl->wpn[wp].hits;
+		}
+	}
+
+	// If new hit detected, activate indicator and record time
+	if (new_hit) {
+		hit_detector.hit_active = true;
+		hit_detector.hit_time = cls.realtime;
+	}
+}
+
+// Called when new map spawned
+void SCR_ClearHitIndicator(void)
+{
+	memset(&hit_detector, 0, sizeof(hit_detector));
+}
+
+void SCR_HUD_HitIndicator(hud_t *hud)
+{
+	int x, y;
+	int i;
+	double current_time = cls.realtime;
+	double time_since_hit;
+	int alpha = 255;
+	mpic_t *pic;
+
+	static cvar_t
+		*hud_hitindicator_scale = NULL,
+		*hud_hitindicator_duration,
+		*hud_hitindicator_fade;
+
+	if (hud_hitindicator_scale == NULL) {
+		// first time - cache cvars
+		hud_hitindicator_scale = HUD_FindVar(hud, "scale");
+		hud_hitindicator_duration = HUD_FindVar(hud, "duration");
+		hud_hitindicator_fade = HUD_FindVar(hud, "fade");
+	}
+
+	// Get current player index
+	i = (cl.spectator ? Cam_TrackNum() : cl.playernum);
+	if (i < 0 || i >= MAX_CLIENTS) {
+		HUD_PrepareDraw(hud, 0, 0, &x, &y);
+		return;
+	}
+
+	// Check for new hits
+	HIT_DetectHit(&ws_clients[i]);
+
+	// Calculate time since last hit
+	time_since_hit = current_time - hit_detector.hit_time;
+
+	// Check if we should still show the indicator
+	if (!hit_detector.hit_active || time_since_hit > hud_hitindicator_duration->value) {
+		hit_detector.hit_active = false;
+		HUD_PrepareDraw(hud, 0, 0, &x, &y);
+		return;
+	}
+
+	// Load the picture
+	pic = Draw_CachePic(CACHEPIC_DMG);
+	if (!pic) {
+		HUD_PrepareDraw(hud, 0, 0, &x, &y);
+		return;
+	}
+
+	// Prepare draw area with scaled picture dimensions
+	HUD_PrepareDraw(hud, pic->width * hud_hitindicator_scale->value, 
+		pic->height * hud_hitindicator_scale->value, &x, &y);
+
+	// Apply fade effect if enabled
+	if (hud_hitindicator_fade->integer) {
+		float fade_ratio = 1.0f - (time_since_hit / hud_hitindicator_duration->value);
+		alpha = (int)(255 * fade_ratio);
+		alpha = bound(0, alpha, 255);
+	}
+
+	// Set alpha for drawing if fading
+	if (alpha < 255) {
+		Draw_AlphaFillRGB(0, 0, 0, 0, alpha);
+	}
+
+	// Draw the picture
+	Draw_Pic(x, y, pic);
+
+	// Reset alpha if it was changed
+	if (alpha < 255) {
+		Draw_AlphaFillRGB(0, 0, 0, 0, 255);
+	}
+}
+
+void HitIndicator_HUDInit(void)
+{
+	// Clear hit detector state
+	memset(&hit_detector, 0, sizeof(hit_detector));
+
+	HUD_Register(
+		"hitindicator", NULL, "Hit indicator - shows when you hit an opponent. Must have weaponstats enabled.",
+		HUD_PLUSMINUS, ca_active, 0, SCR_HUD_HitIndicator,
+		"0", "screen", "center", "center", "0", "0", "0", "0 0 0", NULL,
+		"duration", "0.1",
+		"scale", "1",
+		"fade", "1",
+		NULL
+	);
+}
