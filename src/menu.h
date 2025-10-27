@@ -64,7 +64,7 @@ extern int m_yofs;
 
 typedef enum {
     m_none, m_main, m_proxy, m_singleplayer, m_load, m_save, m_quickplay,
-	m_multiplayer, m_demos, m_multiplayer_submenu,
+	m_multiplayer, m_demos, m_multiplayer_submenu, m_training,
     m_options,
 	m_help,
 	m_quit, m_ingame, 

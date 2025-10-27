@@ -59,6 +59,7 @@ void M_Menu_Main_f (void);
             void M_Menu_SEdit_f (void);
         void M_Menu_Demos_f (void);
         void M_Menu_GameOptions_f (void);
+    void M_Menu_Training_f (void);
     void M_Menu_Options_f (void);
     void M_Menu_Quit_f (void);
 
@@ -392,7 +393,7 @@ typedef struct bigmenu_items_s {
 bigmenu_items_t mainmenu_items[] = {
     {"Quick Play", M_Menu_QuickPlay_f, CACHEPIC_QUICKPLAY},
     {"Servers", M_Menu_MultiPlayer_f, CACHEPIC_SERVERS},
-    {"Training", M_Menu_Options_f, CACHEPIC_TRAINING},
+    {"Training", M_Menu_Training_f, CACHEPIC_TRAINING},
     {"Replays", M_Menu_Demos_f, CACHEPIC_DEMOS},
     {"Settings", M_Menu_Options_f, CACHEPIC_SETTINGS},
     {"Quit", M_Menu_Quit_f, CACHEPIC_QUIT}
@@ -845,6 +846,96 @@ void M_QuickPlay_Key (int key) {
 }
 
 qbool M_QuickPlay_Mouse_Event(const mouse_state_t* ms)
+{
+    int column_spacing = 160;
+    int items_per_column = BIGMENU_ITEMS_COUNT(m_solo_items);
+    menu_window_t solo_window, team_window;
+    int selected_item;
+    int solo_x = 16;
+    int team_x = solo_x + column_spacing;
+
+    // Set up solo column window
+    solo_window.x = solo_x;
+    solo_window.y = 144 + m_yofs;
+    solo_window.w = m_quickplay_window.w;
+    solo_window.h = m_quickplay_window.h;
+
+    // Set up team column window
+    team_window.x = team_x;
+    team_window.y = 144 + m_yofs;
+    team_window.w = m_quickplay_window.w;
+    team_window.h = m_quickplay_window.h;
+
+    // Check if mouse is in solo column
+    if (M_Mouse_Select(&solo_window, ms, items_per_column, &selected_item)) {
+        m_quickplay_cursor = selected_item;  // 0 or 1 for solo items
+    }
+    // Check if mouse is in team column
+    else if (M_Mouse_Select(&team_window, ms, items_per_column, &selected_item)) {
+        m_quickplay_cursor = selected_item + items_per_column;  // 2 or 3 for team items
+    }
+
+    if (ms->button_up == 1) M_QuickPlay_Key(K_MOUSE1);
+    if (ms->button_up == 2) M_QuickPlay_Key(K_MOUSE2);
+
+    return true;
+}
+
+//=============================================================================
+/* TRAINING MENU */
+
+
+
+void M_Menu_Training_f (void) {
+    M_EnterMenu(m_training);
+}
+
+void M_Training_Draw (void) {
+    M_DrawTextBox (60, 10*8, 23, 4);
+    M_PrintWhite (88, 12*8, "Training mode");
+    M_PrintWhite (88, 13*8, "coming soon.");
+}
+
+
+void M_Training_Key (int key) {
+
+    switch (key) {
+        case K_BACKSPACE:
+            m_topmenu = m_none;    // intentional fallthrough
+        case K_MOUSE2:
+        case K_ESCAPE:
+            M_LeaveMenu (m_main);
+            break;
+
+        case '`':
+        case '~':
+            key_dest = key_console;
+            m_state = m_none;
+            break;
+
+        case K_DOWNARROW:
+        case K_MWHEELDOWN:
+            break;
+
+        case K_UPARROW:
+        case K_MWHEELUP:
+            break;
+
+        case K_HOME:
+        case K_PGUP:
+            break;
+
+        case K_END:
+        case K_PGDN:
+            break;
+
+        case K_ENTER:
+	case K_MOUSE1:
+            break;
+    }
+}
+
+qbool M_Training_Mouse_Event(const mouse_state_t* ms)
 {
     int column_spacing = 160;
     int items_per_column = BIGMENU_ITEMS_COUNT(m_solo_items);
@@ -1446,11 +1537,15 @@ qbool M_MultiPlayerSub_Mouse_Event(const mouse_state_t *ms)
 }
 
 void M_Menu_Browser_f (void) {
+    Cvar_SetByName("sb_hideempty", "0");
+    Cvar_SetByName("sb_info_filter", "");
     M_EnterMenu(m_multiplayer);
 }
 
 void M_Menu_MultiPlayer_f (void)
 {
+    Cvar_SetByName("sb_hideempty", "0");
+    Cvar_SetByName("sb_info_filter", "");
     if (Draw_BigFontAvailable()) {
         M_EnterMenu(m_multiplayer);
     }
@@ -1576,6 +1671,7 @@ void M_Draw(void)
 #endif
         case m_multiplayer:        Menu_MultiPlayer_Draw(); break;
         case m_quickplay:        M_QuickPlay_Draw(); break;
+        case m_training:        M_Training_Draw(); break;
         case m_multiplayer_submenu: M_MultiPlayerSub_Draw(); break;
         case m_options:            M_Options_Draw(); break;
         case m_proxy:            Menu_Proxy_Draw(); break;
@@ -1635,6 +1731,7 @@ void M_Keydown (int key, wchar unichar) {
 #endif
         case m_multiplayer:        Menu_MultiPlayer_Key(key, unichar); return;
         case m_quickplay:        M_QuickPlay_Key(key); return;
+        case m_training:        M_Training_Key(key); return;
         case m_multiplayer_submenu: M_MultiPlayerSub_Key(key); return;
         case m_options:         M_Options_Key(key, unichar); return;
         case m_proxy:            M_Proxy_Key(key); return;
@@ -1663,6 +1760,7 @@ qbool Menu_Mouse_Event(const mouse_state_t* ms)
 #endif
     case m_multiplayer:        return Menu_MultiPlayer_Mouse_Event(ms);
     case m_quickplay:        return M_QuickPlay_Mouse_Event(ms);
+    case m_training:        return M_Training_Mouse_Event(ms);
     case m_multiplayer_submenu: return M_MultiPlayerSub_Mouse_Event(ms);
 #ifndef CLIENTONLY
     case m_load:            return M_Load_Mouse_Event(ms);
