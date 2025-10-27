@@ -23,11 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "fonts.h"
 #include "teamplay.h"
 #include "utils.h"
+#include "keys.h"
 
 // -----------
 // gunz
 //
-static void SCR_HUD_DrawGunByNum(hud_t *hud, int num, float scale, int style, int wide, qbool proportional)
+static void SCR_HUD_DrawGunByNum(hud_t *hud, int num, float scale, int style, int wide, qbool proportional, qbool show_key)
 {
 	extern mpic_t *sb_weapons[7][8];  // sbar.c
 	int i = num - 2;
@@ -174,6 +175,12 @@ static void SCR_HUD_DrawGunByNum(hud_t *hud, int num, float scale, int style, in
 				else {
 					Draw_SSubPic(x, y, sb_weapons[flashon][i], 0, 0, 24, 16, scale);
 				}
+				if (show_key) {
+					char binding[12];
+					sprintf(binding, "weapon %d", num);
+					int key = Key_FindBinding(binding);
+					Draw_SString(x, y, Key_KeynumToString(key), scale, proportional);
+				}
 			}
 			break;
 	}
@@ -181,15 +188,16 @@ static void SCR_HUD_DrawGunByNum(hud_t *hud, int num, float scale, int style, in
 
 static void SCR_HUD_DrawGun2(hud_t *hud)
 {
-	static cvar_t *scale = NULL, *style, *proportional, *frame_hide;
+	static cvar_t *scale = NULL, *style, *proportional, *frame_hide, *show_key;
 	if (scale == NULL) {
 		// first time called
 		scale = HUD_FindVar(hud, "scale");
 		style = HUD_FindVar(hud, "style");
 		proportional = HUD_FindVar(hud, "proportional");
+		show_key = HUD_FindVar(hud, "show_key");
 	}
 	if (cl.spectator == cl.autocam) {
-		SCR_HUD_DrawGunByNum(hud, 2, scale->value, style->value, 0, proportional->integer);
+		SCR_HUD_DrawGunByNum(hud, 2, scale->value, style->value, 0, proportional->integer, show_key->integer);
 	}
 
 	frame_hide = HUD_FindVar(hud, "frame_hide");
@@ -200,15 +208,16 @@ static void SCR_HUD_DrawGun2(hud_t *hud)
 
 static void SCR_HUD_DrawGun3(hud_t *hud)
 {
-	static cvar_t *scale = NULL, *style, *proportional, *frame_hide;
+	static cvar_t *scale = NULL, *style, *proportional, *frame_hide, *show_key;
 	if (scale == NULL) {
 		// first time called
 		scale = HUD_FindVar(hud, "scale");
 		style = HUD_FindVar(hud, "style");
 		proportional = HUD_FindVar(hud, "proportional");
+		show_key = HUD_FindVar(hud, "show_key");
 	}
 	if (cl.spectator == cl.autocam) {
-		SCR_HUD_DrawGunByNum(hud, 3, scale->value, style->value, 0, proportional->integer);
+		SCR_HUD_DrawGunByNum(hud, 3, scale->value, style->value, 0, proportional->integer, show_key->integer);
 	}
 
 	frame_hide = HUD_FindVar(hud, "frame_hide");
@@ -219,15 +228,16 @@ static void SCR_HUD_DrawGun3(hud_t *hud)
 
 static void SCR_HUD_DrawGun4(hud_t *hud)
 {
-	static cvar_t *scale = NULL, *style, *proportional, *frame_hide;
+	static cvar_t *scale = NULL, *style, *proportional, *frame_hide, *show_key;
 	if (scale == NULL) {
 		// first time called
 		scale = HUD_FindVar(hud, "scale");
 		style = HUD_FindVar(hud, "style");
 		proportional = HUD_FindVar(hud, "proportional");
+		show_key = HUD_FindVar(hud, "show_key");
 	}
 	if (cl.spectator == cl.autocam) {
-		SCR_HUD_DrawGunByNum(hud, 4, scale->value, style->value, 0, proportional->integer);
+		SCR_HUD_DrawGunByNum(hud, 4, scale->value, style->value, 0, proportional->integer, show_key->integer);
 	}
 
 	frame_hide = HUD_FindVar(hud, "frame_hide");
@@ -238,15 +248,16 @@ static void SCR_HUD_DrawGun4(hud_t *hud)
 
 static void SCR_HUD_DrawGun5(hud_t *hud)
 {
-	static cvar_t *scale = NULL, *style, *proportional, *frame_hide;
+	static cvar_t *scale = NULL, *style, *proportional, *frame_hide, *show_key;
 	if (scale == NULL) {
 		// first time called
 		scale = HUD_FindVar(hud, "scale");
 		style = HUD_FindVar(hud, "style");
 		proportional = HUD_FindVar(hud, "proportional");
+		show_key = HUD_FindVar(hud, "show_key");
 	}
 	if (cl.spectator == cl.autocam) {
-		SCR_HUD_DrawGunByNum(hud, 5, scale->value, style->value, 0, proportional->integer);
+		SCR_HUD_DrawGunByNum(hud, 5, scale->value, style->value, 0, proportional->integer, show_key->integer);
 	}
 
 	frame_hide = HUD_FindVar(hud, "frame_hide");
@@ -257,15 +268,16 @@ static void SCR_HUD_DrawGun5(hud_t *hud)
 
 static void SCR_HUD_DrawGun6(hud_t *hud)
 {
-	static cvar_t *scale = NULL, *style, *proportional, *frame_hide;
+	static cvar_t *scale = NULL, *style, *proportional, *frame_hide, *show_key;
 	if (scale == NULL) {
 		// first time called
 		scale = HUD_FindVar(hud, "scale");
 		style = HUD_FindVar(hud, "style");
 		proportional = HUD_FindVar(hud, "proportional");
+		show_key = HUD_FindVar(hud, "show_key");
 	}
 	if (cl.spectator == cl.autocam) {
-		SCR_HUD_DrawGunByNum(hud, 6, scale->value, style->value, 0, proportional->integer);
+		SCR_HUD_DrawGunByNum(hud, 6, scale->value, style->value, 0, proportional->integer, show_key->integer);
 	}
 
 	frame_hide = HUD_FindVar(hud, "frame_hide");
@@ -276,15 +288,16 @@ static void SCR_HUD_DrawGun6(hud_t *hud)
 
 static void SCR_HUD_DrawGun7(hud_t *hud)
 {
-	static cvar_t *scale = NULL, *style, *proportional, *frame_hide;
+	static cvar_t *scale = NULL, *style, *proportional, *frame_hide, *show_key;
 	if (scale == NULL) {
 		// first time called
 		scale = HUD_FindVar(hud, "scale");
 		style = HUD_FindVar(hud, "style");
 		proportional = HUD_FindVar(hud, "proportional");
+		show_key = HUD_FindVar(hud, "show_key");
 	}
 	if (cl.spectator == cl.autocam) {
-		SCR_HUD_DrawGunByNum(hud, 7, scale->value, style->value, 0, proportional->integer);
+		SCR_HUD_DrawGunByNum(hud, 7, scale->value, style->value, 0, proportional->integer, show_key->integer);
 	}
 
 	frame_hide = HUD_FindVar(hud, "frame_hide");
@@ -295,16 +308,17 @@ static void SCR_HUD_DrawGun7(hud_t *hud)
 
 static void SCR_HUD_DrawGun8(hud_t *hud)
 {
-	static cvar_t *scale = NULL, *style, *wide, *proportional, *frame_hide;
+	static cvar_t *scale = NULL, *style, *wide, *proportional, *frame_hide, *show_key;
 	if (scale == NULL) {
 		// first time called
 		scale = HUD_FindVar(hud, "scale");
 		style = HUD_FindVar(hud, "style");
 		wide = HUD_FindVar(hud, "wide");
 		proportional = HUD_FindVar(hud, "proportional");
+		show_key = HUD_FindVar(hud, "show_key");
 	}
 	if (cl.spectator == cl.autocam) {
-		SCR_HUD_DrawGunByNum(hud, 8, scale->value, style->value, wide->value, proportional->integer);
+		SCR_HUD_DrawGunByNum(hud, 8, scale->value, style->value, wide->value, proportional->integer, show_key->integer);
 	}
 
 	frame_hide = HUD_FindVar(hud, "frame_hide");
@@ -348,7 +362,7 @@ static void SCR_HUD_DrawGunCurrent(hud_t *hud)
 	}
 
 	if (cl.spectator == cl.autocam) {
-		SCR_HUD_DrawGunByNum(hud, gun, scale->value, style->value, wide->value, proportional->integer);
+		SCR_HUD_DrawGunByNum(hud, gun, scale->value, style->value, wide->value, proportional->integer, false);
 	}
 }
 
@@ -371,6 +385,7 @@ void Guns_HudInit(void)
 		"scale", "1",
 		"proportional", "0",
 		"frame_hide", "0",
+		"show_key", "0",
 		NULL);
 	HUD_Register("gun3", NULL, "Part of your inventory - super shotgun.",
 		HUD_INVENTORY, ca_active, 0, SCR_HUD_DrawGun3,
@@ -379,6 +394,7 @@ void Guns_HudInit(void)
 		"scale", "1",
 		"proportional", "0",
 		"frame_hide", "0",
+		"show_key", "0",
 		NULL);
 	HUD_Register("gun4", NULL, "Part of your inventory - nailgun.",
 		HUD_INVENTORY, ca_active, 0, SCR_HUD_DrawGun4,
@@ -387,6 +403,7 @@ void Guns_HudInit(void)
 		"scale", "1",
 		"proportional", "0",
 		"frame_hide", "0",
+		"show_key", "0",
 		NULL);
 	HUD_Register("gun5", NULL, "Part of your inventory - super nailgun.",
 		HUD_INVENTORY, ca_active, 0, SCR_HUD_DrawGun5,
@@ -395,6 +412,7 @@ void Guns_HudInit(void)
 		"scale", "1",
 		"proportional", "0",
 		"frame_hide", "0",
+		"show_key", "0",
 		NULL);
 	HUD_Register("gun6", NULL, "Part of your inventory - grenade launcher.",
 		HUD_INVENTORY, ca_active, 0, SCR_HUD_DrawGun6,
@@ -403,6 +421,7 @@ void Guns_HudInit(void)
 		"scale", "1",
 		"proportional", "0",
 		"frame_hide", "0",
+		"show_key", "0",
 		NULL);
 	HUD_Register("gun7", NULL, "Part of your inventory - rocket launcher.",
 		HUD_INVENTORY, ca_active, 0, SCR_HUD_DrawGun7,
@@ -411,6 +430,7 @@ void Guns_HudInit(void)
 		"scale", "1",
 		"proportional", "0",
 		"frame_hide", "0",
+		"show_key", "0",
 		NULL);
 	HUD_Register("gun8", NULL, "Part of your inventory - thunderbolt.",
 		HUD_INVENTORY, ca_active, 0, SCR_HUD_DrawGun8,
@@ -420,5 +440,6 @@ void Guns_HudInit(void)
 		"scale", "1",
 		"proportional", "0",
 		"frame_hide", "0",
+		"show_key", "0",
 		NULL);
 }
