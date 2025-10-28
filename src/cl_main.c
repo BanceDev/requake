@@ -1437,6 +1437,7 @@ void CL_Disconnect_f (void)
 void CL_Reconnect_f (void) 
 {
 	SCR_FinishMapVote();
+	is_ready = false;
 	if (cls.download)
 		return; // Don't change when downloading.
 
